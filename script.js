@@ -13,6 +13,22 @@
   var videoStarted = false;
 
   /* ---------------------------------------------------------
+     Scroll to whatever section the URL hash points to (e.g.
+     "#work" from the "Back to Our Work" link on a sub-page).
+     Needed because body.lock sets overflow:hidden while the
+     intro plays, which silently blocks the browser's own
+     automatic hash-jump on page load — without this, the page
+     is left sitting at the top (hero) once unlocked, ignoring
+     the hash entirely.
+  --------------------------------------------------------- */
+  function goToHash() {
+    if (!window.location.hash) return;
+    var target;
+    try { target = document.querySelector(window.location.hash); } catch (e) {}
+    if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+  }
+
+  /* ---------------------------------------------------------
      1. PRELOADER -> REEL -> autoplay
      Only runs on the homepage (reel elements present).
      Starts playback as soon as the video itself is ready
@@ -63,6 +79,7 @@
       body.classList.remove("lock");
       if (nav) nav.classList.add("reveal");
       if (main) main.classList.add("reveal");
+      goToHash();
       requestAnimationFrame(function () {
         if (hero) hero.classList.add("play");
       });
@@ -103,6 +120,7 @@
     body.classList.remove("lock");
     if (nav) nav.classList.add("reveal");
     if (main) main.classList.add("reveal");
+    goToHash();
     requestAnimationFrame(function () {
       if (hero) hero.classList.add("play");
     });
