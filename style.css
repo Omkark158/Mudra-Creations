@@ -66,6 +66,10 @@ button{ font: inherit; cursor:pointer; }
   transition: opacity .6s var(--ease), visibility .6s var(--ease);
 }
 #preloader.hide{ opacity:0; visibility:hidden; }
+/* repeat visit within this session: skip the intro with zero flash —
+   this class is added by an inline script before these elements paint */
+html.no-intro #preloader,
+html.no-intro #reel{ display:none !important; }
 .preloader-bar{
   width: 160px; height: 3px; border-radius:99px; overflow:hidden;
   background: rgba(255,255,255,.14);
@@ -448,8 +452,9 @@ h2{ font-family: var(--serif); font-size: var(--fs-h2); font-weight:600; line-he
 /* ---- platform icon colors — real brand colors ---- */
 /* Call: no single official brand color; using a neutral telecom blue distinct from the others */
 .cc-violet svg{ background: #2E6FD9; }
-/* WhatsApp official green */
-.cc-coral svg{ background: #25D366; }
+/* WhatsApp official green — rounded-square badge (WhatsApp's actual mark
+   shape) instead of the plain circle used by the other icons */
+.cc-coral svg{ background: #25D366; border-radius: 28%; }
 /* Gmail/Email official red */
 .cc-lime svg{ background: #EA4335; color: #fff; }
 /* Instagram official gradient */

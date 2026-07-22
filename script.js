@@ -18,6 +18,12 @@
      Starts playback as soon as the video itself is ready
      (canplaythrough) instead of waiting on the whole page's
      "load" event — this removes most of the perceived lag.
+
+     Note: on repeat visits within this session, an inline
+     script in index.html (runs before these elements even
+     paint) already adds html.no-intro, which hides #preloader
+     and #reel instantly via CSS — so the branch below never
+     gets a visible flash to skip past.
   --------------------------------------------------------- */
   var introAlreadyPlayed = false;
   try { introAlreadyPlayed = sessionStorage.getItem("mudraIntroPlayed") === "1"; } catch (e) {}
@@ -129,6 +135,30 @@
         navToggle.setAttribute("aria-expanded", "false");
       });
     });
+  }
+
+  /* ---------------------------------------------------------
+     3b. URL HASH SYNC — keeps the address bar hash matched to
+     whichever section is actually in view while scrolling, using
+     replaceState (doesn't spam browser history). Clears the hash
+     entirely once the hero/top section is in view — this is what
+     fixes the URL staying stuck on "#work" after using the
+     "Back to Our Work" link and then scrolling up to the hero.
+  --------------------------------------------------------- */
+  var hashSections = document.querySelectorAll("main section[id]");
+  if (hashSections.length && window.history && window.history.replaceState) {
+    var sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var id = entry.target.id;
+        var newHash = (id === "hero") ? "" : ("#" + id);
+        if ((window.location.hash || "") !== newHash) {
+          var newUrl = window.location.pathname + window.location.search + newHash;
+          window.history.replaceState(null, "", newUrl);
+        }
+      });
+    }, { threshold: 0, rootMargin: "-45% 0px -45% 0px" });
+    hashSections.forEach(function (s) { sectionObserver.observe(s); });
   }
 
   /* ---------------------------------------------------------

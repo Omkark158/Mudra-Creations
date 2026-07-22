@@ -13,6 +13,19 @@
 </head>
 <body class="lock">
 
+<script>
+  /* Runs synchronously before the preloader/reel markup below is
+     parsed, so on repeat visits within this session they never
+     get a chance to paint at all — no flash. */
+  (function () {
+    try {
+      if (sessionStorage.getItem("mudraIntroPlayed") === "1") {
+        document.documentElement.classList.add("no-intro");
+      }
+    } catch (e) {}
+  })();
+</script>
+
 <div class="grain"></div>
 
 <!-- ============ PRELOADER ============ -->
@@ -24,7 +37,7 @@
 <!-- intro reel -->
 <div id="reel">
   <div class="reel-frame">
-    <video id="reel-video" muted playsinline preload="auto">
+    <video id="reel-video" muted playsinline preload="metadata">
       <source src="assets/hero-horizontal.mp4" media="(min-width: 641px)">
       <source src="assets/hero.mp4">
     </video>
