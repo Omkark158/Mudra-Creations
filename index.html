@@ -24,7 +24,7 @@
 <!-- intro reel -->
 <div id="reel">
   <div class="reel-frame">
-    <video id="reel-video" muted playsinline>
+    <video id="reel-video" muted playsinline preload="auto">
       <source src="assets/hero-horizontal.mp4" media="(min-width: 641px)">
       <source src="assets/hero.mp4">
     </video>
@@ -39,10 +39,16 @@
     <span class="nav-brand-text">Mudra <b>Creations</b></span>
   </a>
   <nav class="nav-links" id="nav-links">
-    <a href="#about" data-nav>About</a>
-    <a href="#services" data-nav>Services</a>
-    <a href="#work" data-nav>Our Work</a>
-    <a href="#contact" class="nav-cta" data-nav>Let's Talk</a>
+    <div class="nav-links-top">
+      <img src="assets/logo.png" alt="Mudra Creations logo" class="nav-links-logo">
+      <span class="nav-links-brand">Mudra <b>Creations</b></span>
+    </div>
+    <div class="nav-links-items">
+      <a href="#about" data-nav>About</a>
+      <a href="#services" data-nav>Services</a>
+      <a href="#work" data-nav>Our Work</a>
+      <a href="#contact" class="nav-cta" data-nav>Let's Talk</a>
+    </div>
   </nav>
   <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
     <span></span><span></span><span></span>
@@ -61,7 +67,6 @@
     </div>
 
     <div class="hero-inner">
-      <div class="hero-tag reveal-up">Digital Content Studio</div>
       <h1 class="hero-head">
         <span class="hero-line"><span>Every brand has</span></span>
         <span class="hero-line"><span>a story. We make it</span></span>
@@ -97,7 +102,7 @@
     <div class="container about-grid">
       <div class="about-left reveal-up">
         <div class="eyebrow">About Us</div>
-        <h2>Content that <span class="hl hl-violet">lasts</span><br>forever.</h2>
+        <h2>Where stories find<br>their <span class="hl hl-violet">voice</span>.</h2>
         <p>Every brand has a story. Every journey has a purpose. Every frame has the power to create an emotion.</p>
         <p>We believe content is more than posts, reels and videos — it's about creating visuals people remember. We help brands, businesses and creators bring their stories to life through strategy, creativity and compelling visual content.</p>
       </div>
@@ -119,7 +124,7 @@
     <div class="container">
       <div class="services-head reveal-up">
         <div class="eyebrow">What We Do</div>
-        <h2>A full production<br>studio, on call.</h2>
+        <h2>A full creative<br>process, on call.</h2>
         <p>From the first strategy call to the final export — we handle every stage of the content that carries your brand.</p>
       </div>
 
@@ -148,7 +153,7 @@
       </div>
 
       <div class="work-grid">
-        <div class="work-card tilt-card reveal-up">
+        <a class="work-card tilt-card reveal-up" href="work-travel.html">
           <video muted loop playsinline preload="metadata">
             <source src="assets/hero-horizontal.mp4" media="(min-width: 641px)">
             <source src="assets/hero.mp4">
@@ -160,9 +165,9 @@
             <h3>Stories from the road</h3>
             <p>Captured through cinematic storytelling.</p>
           </div>
-        </div>
+        </a>
 
-        <div class="work-card tilt-card reveal-up d1">
+        <a class="work-card tilt-card reveal-up d1" href="work-vlogs.html">
           <div class="work-fallback scrim-b"></div>
           <div class="work-card-scrim scrim-b"></div>
           <div class="work-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg></div>
@@ -171,9 +176,9 @@
             <h3>Short-form experiences</h3>
             <p>Designed to engage and connect.</p>
           </div>
-        </div>
+        </a>
 
-        <div class="work-card tilt-card reveal-up d2">
+        <a class="work-card tilt-card reveal-up d2" href="work-speedramp.html">
           <div class="work-fallback scrim-c"></div>
           <div class="work-card-scrim scrim-c"></div>
           <div class="work-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg></div>
@@ -182,7 +187,7 @@
             <h3>High-energy edits</h3>
             <p>Crafted to grab attention instantly.</p>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -252,10 +257,10 @@
             <a href="https://wa.me/918262927466" target="_blank" rel="noopener">+91 82629 27466</a>
           </span>
         </div>
-        <a class="contact-card cc-lime" href="mailto:hello@mudracreations.com">
+        <a class="contact-card cc-lime" href="mailto:hellomudracreations@gmail.com">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2v.01L12 13 4 6.01V6h16zM4 18V8.24l7.4 6.16a1 1 0 001.2 0L20 8.24V18H4z"/></svg>
           <span class="cc-label">Email</span>
-          <span class="cc-value">hello@mudracreations.com</span>
+          <span class="cc-value">hellomudracreations@gmail.com</span>
         </a>
         <a class="contact-card cc-pink" href="https://www.instagram.com/_mudra.creations_?igsh=MWU2NHdkazgyYzZyZw==" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>

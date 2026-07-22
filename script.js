@@ -14,104 +14,141 @@
 
   /* ---------------------------------------------------------
      1. PRELOADER -> REEL -> autoplay
+     Only runs on the homepage (reel elements present).
+     Starts playback as soon as the video itself is ready
+     (canplaythrough) instead of waiting on the whole page's
+     "load" event — this removes most of the perceived lag.
   --------------------------------------------------------- */
-  function showReel() {
-    preloader.classList.add("hide");
-    reel.classList.add("show");
-    enterSite();
-  }
+  var introAlreadyPlayed = false;
+  try { introAlreadyPlayed = sessionStorage.getItem("mudraIntroPlayed") === "1"; } catch (e) {}
 
-  window.addEventListener("load", function () {
-    setTimeout(showReel, 500);
-  });
+  if (reel && reelVideo && preloader && !introAlreadyPlayed) {
 
-  setTimeout(function () {
-    if (preloader && !preloader.classList.contains("hide")) showReel();
-  }, 4000);
-
-  function enterSite() {
-    if (videoStarted) return;
-    videoStarted = true;
-
-    try { reelVideo.currentTime = 0; } catch (e) {}
-    var playPromise = reelVideo.play();
-    if (playPromise && playPromise.catch) {
-      playPromise.catch(function () { runTransition(); });
+    function showReel() {
+      preloader.classList.add("hide");
+      reel.classList.add("show");
+      enterSite();
     }
-  }
 
-  /* ---------------------------------------------------------
-     2. REEL -> DISSOLVE -> SITE CONTENT
-  --------------------------------------------------------- */
-  function revealSite() {
+    function enterSite() {
+      if (videoStarted) return;
+      videoStarted = true;
+
+      try { reelVideo.currentTime = 0; } catch (e) {}
+      var playPromise = reelVideo.play();
+      if (playPromise && playPromise.catch) {
+        playPromise.catch(function () { runTransition(); });
+      }
+    }
+
+    // fire the moment the video has enough data to play through smoothly
+    reelVideo.addEventListener("canplaythrough", showReel, { once: true });
+
+    // fallback: if canplaythrough never fires (slow network), don't block
+    // the visitor forever — show the reel anyway after 2.5s
+    setTimeout(function () {
+      if (!preloader.classList.contains("hide")) showReel();
+    }, 2500);
+
+    /* -------------------------------------------------------
+       2. REEL -> DISSOLVE -> SITE CONTENT
+    ------------------------------------------------------- */
+    function revealSite() {
+      body.classList.remove("lock");
+      if (nav) nav.classList.add("reveal");
+      if (main) main.classList.add("reveal");
+      requestAnimationFrame(function () {
+        if (hero) hero.classList.add("play");
+      });
+    }
+
+    function runTransition() {
+      if (transitionStarted) return;
+      transitionStarted = true;
+
+      try { sessionStorage.setItem("mudraIntroPlayed", "1"); } catch (e) {}
+
+      var frame = document.querySelector(".reel-frame");
+      if (frame) frame.classList.add("dissolve");
+
+      setTimeout(function () {
+        reel.classList.add("dissolve-out");
+        revealSite();
+      }, 400);
+
+      setTimeout(function () {
+        reel.style.display = "none";
+      }, 1400);
+    }
+
+    reelVideo.addEventListener("ended", runTransition);
+
+    // hard cap: never let the intro block the site for more than 8s total
+    setTimeout(function () {
+      if (videoStarted && !transitionStarted) runTransition();
+      else if (!transitionStarted) { showReel(); runTransition(); }
+    }, 8000);
+
+  } else {
+    // sub-pages (no reel/preloader), OR the homepage on a repeat visit
+    // within this browser session — reveal immediately, no intro replay
+    if (preloader) preloader.style.display = "none";
+    if (reel) reel.style.display = "none";
     body.classList.remove("lock");
-    nav.classList.add("reveal");
-    main.classList.add("reveal");
+    if (nav) nav.classList.add("reveal");
+    if (main) main.classList.add("reveal");
     requestAnimationFrame(function () {
-      hero.classList.add("play");
+      if (hero) hero.classList.add("play");
     });
   }
 
-  function runTransition() {
-    if (transitionStarted) return;
-    transitionStarted = true;
-
-    var frame = document.querySelector(".reel-frame");
-    frame.classList.add("dissolve");
-
-    setTimeout(function () {
-      reel.classList.add("dissolve-out");
-      revealSite();
-    }, 400);
-
-    setTimeout(function () {
-      reel.style.display = "none";
-    }, 1400);
-  }
-
-  reelVideo.addEventListener("ended", runTransition);
-
-  setTimeout(function () {
-    if (videoStarted && !transitionStarted) runTransition();
-  }, 12000);
-
   /* ---------------------------------------------------------
-     3. NAV — scrolled state + mobile toggle
+     3. NAV — scrolled state + mobile toggle (X icon)
   --------------------------------------------------------- */
-  function onScroll() {
-    if (window.scrollY > 20) nav.classList.add("scrolled");
-    else nav.classList.remove("scrolled");
+  if (nav) {
+    function onScroll() {
+      if (window.scrollY > 20) nav.classList.add("scrolled");
+      else nav.classList.remove("scrolled");
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
   }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
 
   var navToggle = document.getElementById("nav-toggle");
   var navLinks = document.getElementById("nav-links");
-  navToggle.addEventListener("click", function () {
-    navLinks.classList.toggle("open");
-  });
-  navLinks.querySelectorAll("a").forEach(function (a) {
-    a.addEventListener("click", function () {
-      navLinks.classList.remove("open");
+  if (navToggle && navLinks) {
+    navToggle.addEventListener("click", function () {
+      var isOpen = navLinks.classList.toggle("open");
+      navToggle.classList.toggle("open", isOpen);
+      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
-  });
+    navLinks.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        navLinks.classList.remove("open");
+        navToggle.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 
   /* ---------------------------------------------------------
      4. SCROLL REVEALS
   --------------------------------------------------------- */
   var revealTargets = document.querySelectorAll(".reveal-up");
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in");
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.16, rootMargin: "0px 0px -60px 0px" }
-  );
-  revealTargets.forEach(function (el) { io.observe(el); });
+  if (revealTargets.length) {
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.16, rootMargin: "0px 0px -60px 0px" }
+    );
+    revealTargets.forEach(function (el) { io.observe(el); });
+  }
 
   /* ---------------------------------------------------------
      5. Work card videos — play on hover (desktop only)

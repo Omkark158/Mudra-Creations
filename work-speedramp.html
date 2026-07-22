@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Ramp Videos — Mudra Creations</title>
+<meta name="description" content="High-energy speed ramp edits by Mudra Creations.">
+<link rel="icon" href="assets/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- ============ NAV ============ -->
+<header class="site-nav reveal scrolled" id="site-nav">
+  <a href="index.html#top" class="nav-brand">
+    <img src="assets/logo.png" alt="Mudra Creations logo">
+    <span class="nav-brand-text">Mudra <b>Creations</b></span>
+  </a>
+  <nav class="nav-links" id="nav-links">
+    <div class="nav-links-top">
+      <img src="assets/logo.png" alt="Mudra Creations logo" class="nav-links-logo">
+      <span class="nav-links-brand">Mudra <b>Creations</b></span>
+    </div>
+    <div class="nav-links-items">
+      <a href="index.html#about" data-nav>About</a>
+      <a href="index.html#services" data-nav>Services</a>
+      <a href="index.html#work" data-nav>Our Work</a>
+      <a href="index.html#contact" class="nav-cta" data-nav>Let's Talk</a>
+    </div>
+  </nav>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main class="reveal">
+
+  <section class="subpage-hero">
+    <div class="container">
+      <a href="index.html#work" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Our Work
+      </a>
+      <div class="eyebrow">Speed Ramp Videos</div>
+      <h1>High-energy edits.</h1>
+      <p>Crafted to grab attention instantly. Tap a card to play the video.</p>
+    </div>
+  </section>
+
+  <section class="gallery-section">
+    <div class="container">
+      <div class="gallery-grid" id="speedramp-grid">
+        <!-- Cards are generated below by script — see the `videos` list -->
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <a href="index.html#top" class="footer-mark">
+        <img src="assets/logo.png" alt="Mudra Creations">
+        <span>Visuals that last forever</span>
+      </a>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/_mudra.creations_" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://youtube.com/@mudracreations" target="_blank" rel="noopener">YouTube</a>
+        <a href="mailto:hellomudracreations@gmail.com">Email</a>
+      </div>
+      <div class="footer-meta">&copy; 2026 Mudra Creations. All rights reserved.</div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ============ VIDEO LIGHTBOX ============ -->
+<div class="video-modal" id="video-modal">
+  <div class="video-modal-inner">
+    <button class="video-modal-close" id="video-modal-close" aria-label="Close video">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <video id="video-modal-player" playsinline controls></video>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ==============================================================
+     EDIT ME: this is the full list of speed ramp videos.
+     `file` must exactly match the filename in your assets folder
+     (same spelling/capitalization/spaces, and the right extension —
+     these are assumed to be .mp4, change if yours differ).
+     Add, remove, rename or reorder entries freely.
+     `title` is kept for the aria-label (accessibility) only —
+     it is no longer shown on the card.
+  ============================================================== */
+  var videos = [
+    { title: "Shubham Dining Final", file: "assets/Shubham Dining Final.mp4" },
+    { title: "Tea Stall Edit",       file: "assets/Teastalledit.mp4" },
+    { title: "SD Maharashtriya Final", file: "assets/SD Maharashtriya Final.mp4" },
+    { title: "Paithani Final",       file: "assets/Paithani Final.mp4" },
+    { title: "Jamadar Dairy Final",  file: "assets/Jamadar Dairy Final.mp4" },
+    { title: "Adik Sir Bullet 2",    file: "assets/Adik Sir Bullet 2.mp4" },
+    { title: "Bullet Final",         file: "assets/Bullet Final.mp4" },
+    { title: "Road Cons Final",      file: "assets/Road Cons final.mp4" }
+  ];
+
+  var grid = document.getElementById("speedramp-grid");
+  var modal = document.getElementById("video-modal");
+  var modalPlayer = document.getElementById("video-modal-player");
+  var modalClose = document.getElementById("video-modal-close");
+
+  videos.forEach(function (v, i) {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "gallery-card";
+    card.setAttribute("aria-label", "Play " + v.title);
+    card.innerHTML =
+      '<video src="' + v.file + '" muted loop playsinline preload="metadata"></video>' +
+      '<div class="gallery-card-play">' +
+        '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+      '</div>';
+
+    var previewVideo = card.querySelector("video");
+    card.addEventListener("mouseenter", function () { previewVideo.play().catch(function(){}); });
+    card.addEventListener("mouseleave", function () { previewVideo.pause(); });
+
+    card.addEventListener("click", function () {
+      openModal(v.file);
+    });
+
+    grid.appendChild(card);
+  });
+
+  function openModal(src) {
+    modalPlayer.src = src;
+    modal.classList.add("open");
+    document.body.classList.add("lock");
+    modalPlayer.currentTime = 0;
+    modalPlayer.play().catch(function(){});
+  }
+
+  function closeModal() {
+    modal.classList.remove("open");
+    document.body.classList.remove("lock");
+    modalPlayer.pause();
+    modalPlayer.src = "";
+  }
+
+  modalClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeModal();
+  });
+})();
+</script>
+</body>
+</html>
